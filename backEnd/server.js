@@ -4,8 +4,10 @@ const cors = require('cors')
 const connectDB = require('./config/db')
 const bodyParser = require('body-parser')
 
+const medicineRoutes = require('./routes/medicineRoutes')
 
-// dataBase Connection  
+
+// dataBase Connection
 dotenv.config()
 connectDB()
 
@@ -17,6 +19,11 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }))
 
+
+
+
+// routes
+app.use('/api/medicines', medicineRoutes)
 
 const PORT = process.env.PORT || 7000
 app.listen(PORT,()=>{
