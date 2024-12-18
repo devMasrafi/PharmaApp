@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const { generateToken } = require("../utils/generateToken");
 const generateUserName = require("../utils/generateUsername");
 
+// signup
 exports.signup = async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -36,6 +37,7 @@ exports.signup = async (req, res) => {
   }
 };
 
+// login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -68,6 +70,7 @@ exports.login = async (req, res) => {
   }
 };
 
+// protect auth
 exports.protect = async (req, res, next) => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -106,7 +109,8 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-exports.adminAuth = (req, res, next) => {
+// admin auth
+exports.adminAuth = async (req, res, next) => {
   try {
     if (!req.user || req.user.role !== "admin") {
       return res.status(403).json({
