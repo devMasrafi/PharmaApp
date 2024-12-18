@@ -61,18 +61,18 @@ const updateMedicine = async (req, res) => {
 };
 
 // delete medicine
-const deleteMedicine = async(req, res)=>{
-    try {
-        const {id} = req.params;
-        const deletedMedicine = await Medicine.findByIdAndDelete(id);
-        if (!deletedMedicine) {
-            return res.json({message: "medicine not found"})
-        }
-
-        res.json({message: "medicine deleted"})
-    } catch (error) {
-        res.json({message: error.message})
+const deleteMedicine = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedMedicine = await Medicine.findByIdAndDelete(id);
+    if (!deletedMedicine) {
+      return res.json({ message: "medicine not found" });
     }
-}
 
-module.exports = { addMedicine, getMedicine, updateMedicine, deleteMedicine};
+    res.json({ message: "medicine deleted" });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
+module.exports = { addMedicine, getMedicine, updateMedicine, deleteMedicine };
