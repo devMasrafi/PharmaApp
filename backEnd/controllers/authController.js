@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { generateToken } = require("../utils/generateToken");
 const generateUserName = require("../utils/generateUsername");
@@ -64,5 +65,59 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ status: "fail", message: "server error" });
+  }
+};
+
+exports.protect = async (req, res, next) => {
+  try {
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+
+    // verify the token
+    const decodedToken = jwt.verify(
+      token,
+      process.env.TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          return null;
+        }
+        return decoded;
+      }
+    );
+    if (!decodedToken) {
+      return res
+        .status(401)
+        .json({ status: "fail", message: "please login first" });
+    }
+
+    // find user from the decoded token
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "no user found with this token" });
+    }
+    req.user = user;
+
+    next();
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "fail", message: "server error", data: error.message });
+  }
+};
+
+exports.adminAuth = (req, res, next) => {
+  try {
+    if (!req.user || req.user.role !== "admin") {
+      return res.status(403).json({
+        status: "fail",
+        message: "you do not have permission to perform this action",
+      });
+    }
+    next();
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "fail", message: "server error", data: error.message });
   }
 };
