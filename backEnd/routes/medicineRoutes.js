@@ -1,22 +1,25 @@
 const express = require("express");
 
-const { addMedicine, getMedicine, updateMedicine, deleteMedicine } = require("../controllers/medicinControllers");
+const {
+  addMedicine,
+  getMedicine,
+  updateMedicine,
+  deleteMedicine,
+} = require("../controllers/medicinControllers");
+const auth = require("../controllers/authController");
 
 const router = express.Router();
 
 // add new medicine
-router.post("/", addMedicine);
-
+router.post("/", auth.protect, addMedicine);
 
 // get all medicines
-router.get('/', getMedicine)
-
+router.get("/", auth.protect, getMedicine);
 
 //udpate medicine
-router.put("/:id", updateMedicine);
+router.put("/:id", auth.protect, updateMedicine);
 
 // delete a medicine
-router.delete('/:id', deleteMedicine )
-
+router.delete("/:id", auth.protect, deleteMedicine);
 
 module.exports = router;
