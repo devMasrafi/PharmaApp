@@ -36,7 +36,7 @@ const Login = () => {
       const response = await loginData.json();
     //   console.log(response.data.token);
 
-      Cookies.set("token", response.data.token, { expires: 7 });
+      Cookies.set("token", response.data.token, { expires: 1 });
       //   console.log(data.token);
 
       //   if ok navigate to overview
@@ -58,7 +58,7 @@ const Login = () => {
               <div className="mb-8 ">
                 <div>
                   <input
-                    type="text"
+                    type="email"
                     placeholder="email"
                     name="email"
                     value={formData.email}
@@ -68,7 +68,7 @@ const Login = () => {
                 </div>
                 <div>
                   <input
-                    type="text"
+                    type="password"
                     placeholder="password"
                     name="password"
                     value={formData.password}

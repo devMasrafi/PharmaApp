@@ -9,6 +9,7 @@ import Medicine from "./components/pages/Medicine";
 import Illnesses from "./components/pages/Illnesses";
 import Quantity from "./components/pages/Quantity";
 import MainLayout from "./components/pages/layouts/MainLayout";
+import AuthProtectedUtils from "./components/AuthProtectedUtils";
 
 const App = () => {
   document.body.style.backgroundColor = "#D0DBD8";
@@ -18,7 +19,11 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
-        <Route element={<MainLayout/>}>
+        <Route element={
+          <AuthProtectedUtils>
+            <MainLayout/>
+          </AuthProtectedUtils>
+        }>
           <Route path="/" element={<Overview />} />
           <Route path="/addstaff" element={<AddStaff />} />
           <Route path="/expiery" element={<Expiery />} />
