@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router";
+import Cookies from "js-cookie";
 
 const Sidebar = () => {
   const pageArr = [
@@ -25,6 +26,9 @@ const Sidebar = () => {
     },
   ];
 
+  const userRole = Cookies.get("role");
+  // console.log(userRole)
+
   return (
     <main className="border-r-2 border-rounded border-darkWood">
       <section className="flex flex-col h-full justify-between px-[2rem] ">
@@ -46,11 +50,14 @@ const Sidebar = () => {
         </div>
         <div className="flex  flex-col text-white  ">
           {/* role check if admin show add staff other no */}
-          <button
-            className={`px-[2rem] py-[0.5rem] bg-darkWood mb-2 rounded-md capitalize  font-interFont tracking-wider`}
-          >
-            <NavLink to={"/addstaff"}>add staff</NavLink>
-          </button>
+          {userRole === "admin" && (
+            <button
+              className={`px-[2rem] py-[0.5rem] bg-darkWood mb-2 rounded-md capitalize  font-interFont tracking-wider`}
+            >
+              <NavLink to={"/addstaff"}>add staff</NavLink>
+            </button>
+          )}
+
           <button
             className={`px-[2rem] py-[0.5rem] bg-darkWood mb-2 rounded-md capitalize  font-interFont tracking-wider`}
           >

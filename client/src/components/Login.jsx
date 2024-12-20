@@ -34,9 +34,10 @@ const Login = () => {
         },
       });
       const response = await loginData.json();
-    //   console.log(response.data.token);
+      console.log(response.data.userFound);
 
       Cookies.set("token", response.data.token, { expires: 1 });
+      Cookies.set('role', response.data.userFound.role, {expires: 1} )
       //   console.log(data.token);
 
       //   if ok navigate to overview
