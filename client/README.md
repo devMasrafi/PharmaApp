@@ -2,6 +2,22 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+
+# login information
+
+```
+email: monmoygsc@gmail.com
+passowrd: 123456789
+```
+
+# staff login information
+
+```
+email: stafflogin@example.com
+passoword: stafflogin
+```
+
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
