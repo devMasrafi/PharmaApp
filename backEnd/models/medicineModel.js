@@ -27,17 +27,14 @@ const medicineSchema = new mongoose.Schema({
     required: true,
   },
   sellerInfo: {
-    name: {
+    sellerName: {
       type: String,
-      required: true,
     },
-    contactNumber: {
+    sellerContactNumber: {
       type: String,
-      required: true,
     },
-    email: {
+    sellerEmail: {
       type: String,
-      required: true,
     },
   },
 });

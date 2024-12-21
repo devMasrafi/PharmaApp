@@ -19,8 +19,8 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes
-app.use("/api/v1/medicines/", medicineRoutes);
-app.use("/api/v1/users/", authRouter);
+app.use("/api/v1/medicines", medicineRoutes);
+app.use("/api/v1/users", authRouter);
 
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
