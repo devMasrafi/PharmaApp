@@ -10,11 +10,11 @@ const auth = require("../controllers/authController");
 
 const router = express.Router();
 
-// add new medicine
-router.post("/", auth.protect, addMedicine);
-
 // get all medicines
 router.get("/", auth.protect, getMedicine);
+
+// add new medicine
+router.post("/addmedicine", auth.protect, addMedicine);
 
 //udpate medicine
 router.put("/:id", auth.protect, updateMedicine);
