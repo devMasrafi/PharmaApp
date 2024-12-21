@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 const Medicine = () => {
+  const baseUrl = "http://localhost:8000/api/v1/medicines";
+
   const [medicineData, setMedicineData] = useState({
     name: "",
     manufacturer: "",
@@ -42,10 +45,36 @@ const Medicine = () => {
     }
   };
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     console.log(medicineData);
+
+    const token = Cookies.get("token");
+    if (!token) {
+      console.log("no token in cookie");
+      return;
+    }
+
+    try {
+      const medicineCreation = await fetch(`${baseUrl}`, {
+        method: "POST",
+        body: JSON.stringify(medicineData),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      });
+
+      const response = await medicineCreation.json();
+
+      // if (!response.ok) {
+      //   console.log("Failed to create medicine");
+      // }
+
+      console.log("medicine created successfully", response);
+    } catch (error) {
+      console.log({ message: error.message });
+    }
   };
 
   return (
@@ -53,7 +82,7 @@ const Medicine = () => {
       <section>
         <form onSubmit={onSubmitHandler} className="flex justify-evenly">
           {/* medicine info */}
-          <div className="flex gap-x-6 ">
+          <div className="flex gap-x-6">
             <div>
               <div>
                 <input
