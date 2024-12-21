@@ -68,6 +68,16 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.allUser = async (req, res) =>{
+  try {
+    const users = await User.find()
+    res.json(users)
+  } catch (error) {
+    res.json({message: error.message})
+  }
+}
+
+
 exports.protect = async (req, res, next) => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
