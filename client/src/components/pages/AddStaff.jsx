@@ -1,13 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const AddStaff = () => {
   const baseUrl = "http://localhost:8000/api/v1/users";
 
+  const [userData, setUserData] = useState([]);
   const [formData, setformData] = useState({
-    staffEmail: "",
-    staffPassword: "",
+    email: "",
+    password: "",
     role: "staff",
   });
+
+  const getAllUsers = async () => {
+    try {
+      const allUserData = await fetch(`${baseUrl}`);
+      const response = await allUserData.json();
+      setUserData(response); // Update state with API response
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  useEffect(() => {
+    getAllUsers();
+  }, []);
+
+  // console.log(userData)
 
   const onChangeHandler = (e) => {
     setformData({
@@ -16,32 +33,41 @@ const AddStaff = () => {
     });
   };
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     console.log(formData);
-  };
+    const token = Cookies.get("token");
 
-  const data = [
-    {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "123-456-7890",
-      address: "123 Main St",
-    },
-    {
-      name: "Jane Smith",
-      email: "jane@example.com",
-      phone: "987-654-3210",
-      address: "456 Oak Ave",
-    },
-    {
-      name: "Alice Brown",
-      email: "alice@example.com",
-      phone: "555-555-5555",
-      address: "789 Pine Ln",
-    },
-  ];
+    if (!token) {
+      console.error("No token found, please log in first.");
+      return;
+    }
+
+    try {
+      const staffCreation = await fetch(`${baseUrl}/addstaff`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const response = await staffCreation.json();
+
+      if (!staffCreation.ok) {
+        console.log(response.message || "Failed to create staff");
+      }
+
+      console.log("Staff created successfully:", response);
+
+      // auto refresh list if successfull
+
+      getAllUsers();
+    } catch (error) {
+      console.error("Error creating staff:", error.message);
+    }
+  };
 
   return (
     <main>
@@ -55,16 +81,16 @@ const AddStaff = () => {
                   <input
                     type="email"
                     placeholder="email"
-                    name="staffEmail"
-                    value={formData.staffEmail}
+                    name="email"
+                    value={formData.email}
                     onChange={onChangeHandler}
                     className="px-2 py-2 w-full outline-none rounded-sm"
                   />
                   <input
                     type="text"
                     placeholder="password"
-                    name="staffPassword"
-                    value={formData.staffPassword}
+                    name="password"
+                    value={formData.password}
                     onChange={onChangeHandler}
                     className="px-2 py-2  w-full outline-none rounded-sm "
                   />
@@ -76,7 +102,7 @@ const AddStaff = () => {
                   value={formData.role}
                   onChange={onChangeHandler}
                 >
-                  <option value="staff">staff</option>
+                  <option value="">staff</option>
                   <option value="admin">admin</option>
                 </select>
               </div>
@@ -101,12 +127,12 @@ const AddStaff = () => {
             </div>
 
             {/* Data Rows */}
-            {data.map((row, index) => (
+            {userData.map((row, index) => (
               <div
                 key={index}
                 className="flex p-2 border-b border-gray-500 last:border-none bg-white"
               >
-                <div className="flex-1 text-gray-700">{row.name}</div>
+                <div className="flex-1 text-gray-700">{row.username}</div>
                 <div className="flex-1 text-gray-700">{row.email}</div>
                 <div className="flex-1 text-gray-700">{row.phone}</div>
                 <div className="flex-1 text-gray-700">{row.address}</div>
