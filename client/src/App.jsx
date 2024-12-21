@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
-import NotFound from "./components/NotFound";
-import Login from "./components/Login";
+import NotFound from "./components/utlis/NotFound";
+import Login from "./components/pages/Login";
 import Overview from "./components/pages/Overview";
 import AddStaff from "./components/pages/AddStaff";
 import Expiery from "./components/pages/Expiery";
@@ -9,7 +9,9 @@ import Medicine from "./components/pages/Medicine";
 import Illnesses from "./components/pages/Illnesses";
 import Quantity from "./components/pages/Quantity";
 import MainLayout from "./components/pages/layouts/MainLayout";
-import AuthProtectedUtils from "./components/AuthProtectedUtils";
+import AuthProtectedUtils from "./components/utlis/AuthProtectedUtils";
+
+
 
 const App = () => {
   document.body.style.backgroundColor = "#D0DBD8";

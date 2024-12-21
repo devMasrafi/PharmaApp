@@ -1,8 +1,9 @@
 import React, { Children } from "react";
-import useAuthProtectedRedirect from "./AuthProtected";
+import AuthProtected from "./AuthProtected";
+
 
 const AuthProtectedUtils = ({children}) => {
-  useAuthProtectedRedirect();
+  AuthProtected();
 
   return <>{children}</>
 };

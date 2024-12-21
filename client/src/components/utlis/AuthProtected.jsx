@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 
-const AuthProtectedRedirect = () => {
+const AuthProtected = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,4 +14,4 @@ const AuthProtectedRedirect = () => {
   }, [navigate]);
 };
 
-export default AuthProtectedRedirect;
+export default AuthProtected;

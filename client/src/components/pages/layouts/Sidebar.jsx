@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router";
 import Cookies from "js-cookie";
+import uselogout from "../../utlis/logout";
 
 const Sidebar = () => {
   const pageArr = [
@@ -28,6 +29,7 @@ const Sidebar = () => {
 
   const userRole = Cookies.get("role");
   // console.log(userRole)
+  const logout = uselogout()
 
   return (
     <main className="border-r-2 border-rounded border-darkWood">
@@ -60,6 +62,7 @@ const Sidebar = () => {
 
           <button
             className={`px-[2rem] py-[0.5rem] bg-darkWood mb-2 rounded-md capitalize  font-interFont tracking-wider`}
+          onClick={logout}
           >
             logout
           </button>

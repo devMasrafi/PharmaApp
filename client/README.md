@@ -13,8 +13,8 @@ passowrd: 123456789
 # staff login information
 
 ```
-email: stafflogin@example.com
-passoword: stafflogin
+email: sabbir@gmail.com
+passoword: 123456789
 ```
 
 
