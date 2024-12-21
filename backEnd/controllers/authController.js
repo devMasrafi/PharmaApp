@@ -68,28 +68,18 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.allUser = async (req, res) =>{
+exports.allUser = async (req, res) => {
   try {
-    const users = await User.find()
-    res.json(users)
+    const users = await User.find();
+    res.json(users);
   } catch (error) {
-    res.json({message: error.message})
+    res.json({ message: error.message });
   }
-}
-
+};
 
 exports.protect = async (req, res, next) => {
   try {
-    const authHeader = req.header("Authorization");
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
-        status: "fail",
-        message: "Unauthorized: Token is missing or malformed",
-      });
-    }
-
-    const token = authHeader.split(" ")[1];
+    const token = req.header("Authorization")?.replace("Bearer ", "");
 
     // verify the token
     const decodedToken = jwt.verify(
