@@ -4,17 +4,19 @@ import NotFound from "./components/utlis/NotFound";
 import Login from "./components/pages/Login";
 import Overview from "./components/pages/Overview";
 import AddStaff from "./components/pages/AddStaff";
-import Expiery from "./components/pages/Expiery";
+
 import Medicine from "./components/pages/Medicine";
 import Illnesses from "./components/pages/Illnesses";
 import Quantity from "./components/pages/Quantity";
 import MainLayout from "./components/pages/layouts/MainLayout";
 import AuthProtectedUtils from "./components/utlis/AuthProtectedUtils";
+import UpdatePrice from "./components/pages/UpdatePrice";
 
 
 
 const App = () => {
   document.body.style.backgroundColor = "#D0DBD8";
+  
 
   return (
     <BrowserRouter>
@@ -28,7 +30,7 @@ const App = () => {
         }>
           <Route path="/" element={<Overview />} />
           <Route path="/addstaff" element={<AddStaff />} />
-          <Route path="/expiery" element={<Expiery />} />
+          <Route path="/updateprice" element={<UpdatePrice/>} />
           <Route path="/medicine" element={<Medicine />} />
           <Route path="/illnesses" element={<Illnesses />} />
           <Route path="/quantity" element={<Quantity />} />

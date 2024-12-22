@@ -14,13 +14,14 @@ const Sidebar = () => {
       pageName: "medicine",
     },
     {
+      link: "/updateprice",
+      pageName: "Update Price",
+    },
+    {
       link: "/illnesses",
       pageName: "illnesses",
     },
-    {
-      link: "/expiery",
-      pageName: "expiery",
-    },
+    
     {
       link: "/quantity",
       pageName: "quantity",
