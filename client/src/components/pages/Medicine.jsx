@@ -71,7 +71,7 @@ const Medicine = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log(medicineData);
+    // console.log(medicineData);
 
     const token = Cookies.get("token");
     if (!token) {
@@ -95,7 +95,9 @@ const Medicine = () => {
         console.log("Failed to create medicine");
       }
 
-      console.log("medicine created successfully", response);
+      // console.log("medicine created successfully", response);
+
+      getAllMedicines();
     } catch (error) {
       console.log({ message: error.message });
     }
@@ -232,7 +234,7 @@ const Medicine = () => {
             </div>
 
             {/* Data Rows */}
-            <div className="rounded-b-lg overflow-hidden h-[22rem] overflow-y-auto scrollbar-hidden">
+            <div className="rounded-b-lg overflow-hidden h-[19rem] overflow-y-auto scrollbar-hidden">
               {medicines.map((row, index) => (
                 <div
                   key={index}
