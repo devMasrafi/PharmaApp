@@ -166,7 +166,7 @@ const Quantity = () => {
             </div>
 
             {/* Data Rows */}
-            <div className="rounded-b-lg overflow-hidden h-[19rem] overflow-y-auto scrollbar-hidden">
+            <div className="rounded-b-lg overflow-hidden h-[31rem] overflow-y-auto scrollbar-hidden">
               {filterMedicines.map((row, index) => (
                 <div
                   key={index}
