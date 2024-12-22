@@ -116,7 +116,7 @@ const AddStaff = () => {
         </div>
         {/* list of staff members */}
         <div className=" p-6 mt-[8rem] ">
-          <div className="border border-gray-500 rounded-lg overflow-hidden">
+          <div className="border border-gray-500 rounded-lg ">
             {/* Header */}
             <div className="flex border-b border-gray-500 p-2">
               <div className="flex-1 font-medium text-gray-700">Name</div>
@@ -127,22 +127,24 @@ const AddStaff = () => {
             </div>
 
             {/* Data Rows */}
-            {userData.map((row, index) => (
-              <div
-                key={index}
-                className="flex p-2 border-b border-gray-500 last:border-none bg-white"
-              >
-                <div className="flex-1 text-gray-700">{row.username}</div>
-                <div className="flex-1 text-gray-700">{row.email}</div>
-                <div className="flex-1 text-gray-700">{row.phone}</div>
-                <div className="flex-1 text-gray-700">{row.address}</div>
-                <div className="w-20">
-                  <button className="text-blue-500 hover:underline">
-                    Edit
-                  </button>
+            <div className="rounded-b-lg overflow-hidden h-[22rem] overflow-y-auto scrollbar-hidden">
+              {userData.map((row, index) => (
+                <div
+                  key={index}
+                  className="flex p-2 border-b border-gray-500 last:border-none bg-white"
+                >
+                  <div className="flex-1 text-gray-700">{row.username}</div>
+                  <div className="flex-1 text-gray-700">{row.email}</div>
+                  <div className="flex-1 text-gray-700">{row.phone}</div>
+                  <div className="flex-1 text-gray-700">{row.address}</div>
+                  <div className="w-20">
+                    <button className="text-blue-500 hover:underline">
+                      Edit
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 const Medicine = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
-
+  const [medicines, setMedicines] = useState([]);
   const [medicineData, setMedicineData] = useState({
     name: "",
     manufacturer: "",
@@ -17,6 +17,30 @@ const Medicine = () => {
       sellerEmail: "",
     },
   });
+
+  const getAllMedicines = async () => {
+    const token = Cookies.get("token");
+
+    try {
+      const allMedicines = await fetch(`${baseUrl}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      });
+      if (!allMedicines.ok) {
+        throw new Error("Failed to fetch medicines");
+      }
+      const response = await allMedicines.json();
+      setMedicines(response.data || response);
+    } catch (error) {
+      console.log({ message: error.message });
+    }
+  };
+  useEffect(() => {
+    getAllMedicines();
+  }, []);
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -67,9 +91,9 @@ const Medicine = () => {
 
       const response = await medicineCreation.json();
 
-      // if (!response.ok) {
-      //   console.log("Failed to create medicine");
-      // }
+      if (!medicineCreation.ok) {
+        console.log("Failed to create medicine");
+      }
 
       console.log("medicine created successfully", response);
     } catch (error) {
@@ -79,9 +103,9 @@ const Medicine = () => {
 
   return (
     <main>
+      {/* medicine info */}
       <section>
         <form onSubmit={onSubmitHandler} className="flex justify-evenly">
-          {/* medicine info */}
           <div className="flex gap-x-6">
             <div>
               <div>
@@ -192,7 +216,44 @@ const Medicine = () => {
       </section>
 
       {/* medicine list */}
-      <section></section>
+      <section>
+        <div className=" p-6 mt-[8rem] ">
+          <div className="border border-gray-500 rounded-lg ">
+            {/* Header */}
+            <div className="flex border-b border-gray-500 p-2">
+              <div className="flex-1 font-medium text-gray-700">Name</div>
+              <div className="flex-1 font-medium text-gray-700">
+                manufacturer
+              </div>
+              <div className="flex-1 font-medium text-gray-700">quantity</div>
+              <div className="flex-1 font-medium text-gray-700">buy price</div>
+              <div className="flex-1 font-medium text-gray-700">sell price</div>
+              <div className="w-20 font-medium text-gray-700">Edit</div>
+            </div>
+
+            {/* Data Rows */}
+            <div className="rounded-b-lg overflow-hidden h-[22rem] overflow-y-auto scrollbar-hidden">
+              {medicines.map((row, index) => (
+                <div
+                  key={index}
+                  className="flex p-2 border-b border-gray-500 last:border-none bg-white"
+                >
+                  <div className="flex-1 text-gray-700">{row.name}</div>
+                  <div className="flex-1 text-gray-700">{row.manufacturer}</div>
+                  <div className="flex-1 text-gray-700">{row.stock}</div>
+                  <div className="flex-1 text-gray-700">{row.buyPrice}</div>
+                  <div className="flex-1 text-gray-700">{row.sellPrice}</div>
+                  <div className="w-20">
+                    <button className="text-blue-500 hover:underline">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 };
