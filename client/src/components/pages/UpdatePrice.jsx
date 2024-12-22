@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-
+import { IoSearchOutline } from "react-icons/io5";
 const UpdatePrice = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
   const [medicines, setMedicines] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [medicineData, setMedicineData] = useState({
     buyPrice: "",
     sellPrice: "",
@@ -41,9 +42,6 @@ const UpdatePrice = () => {
   useEffect(() => {
     getAllMedicines();
   }, []);
-
-
-
   const onChangeHandler = (e) => {
     setMedicineData({
       ...medicineData,
@@ -51,27 +49,25 @@ const UpdatePrice = () => {
     });
   };
 
-// getting selected medicine
-const handleSelectedMedicine = (medicine) => {
-  setSelectedMedicine({
-    id: medicine._id, 
-    name: medicine.name,
-    buyPrice: medicine.buyPrice,
-    sellPrice: medicine.sellPrice,
-  });
-  setMedicineData({
-    buyPrice: medicine.buyPrice,
-    sellPrice: medicine.sellPrice,
-  });
-};
-
-
+  // getting selected medicine
+  const handleSelectedMedicine = (medicine) => {
+    setSelectedMedicine({
+      id: medicine._id,
+      name: medicine.name,
+      buyPrice: medicine.buyPrice,
+      sellPrice: medicine.sellPrice,
+    });
+    setMedicineData({
+      buyPrice: medicine.buyPrice,
+      sellPrice: medicine.sellPrice,
+    });
+  };
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     // console.log(medicineData);
 
     if (!selectedMedicine.id) {
-      alert("Please select a medicine to update the price")
+      alert("Please select a medicine to update the price");
       return;
     }
 
@@ -89,7 +85,7 @@ const handleSelectedMedicine = (medicine) => {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-      })
+      });
 
       if (!medicineUpdate.ok) {
         console.log({ message: "Failed to update price" });
@@ -100,7 +96,7 @@ const handleSelectedMedicine = (medicine) => {
       console.log("update successfully", updatedMedicineData);
 
       setSelectedMedicine({
-        id: "", 
+        id: "",
         name: "",
         buyPrice: "",
         sellPrice: "",
@@ -110,22 +106,36 @@ const handleSelectedMedicine = (medicine) => {
         sellPrice: "",
       });
 
-
       getAllMedicines();
     } catch (error) {
       console.error("Error updating medicine prices:", error.message);
     }
   };
 
+  // serching/filtering medicines
+  const filterMedicines = searchQuery
+    ? medicines.filter((medicine) =>
+        medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : medicines;
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <main>
+      {/* update medicine input fields */}
       <section>
         <div>
           <div className="pb-3">
             {/* auto select medicine name from the update btn */}
-            <h2 className="font-RaleWayFont text-md tracking-wider font-medium  " >Medicine name : 
-                <span className="capitalize font-interFont text-lg font-medium text-gray-600/70 "> {selectedMedicine.name || 'select a medicine'}</span>
-              </h2>
+            <h2 className="font-RaleWayFont text-md tracking-wider font-medium  ">
+              Medicine name :
+              <span className="capitalize font-interFont text-lg font-medium text-gray-600/70 ">
+                {" "}
+                {selectedMedicine.name || "select a medicine"}
+              </span>
+            </h2>
           </div>
           <form onSubmit={onSubmitHandler}>
             <div className="flex justify-between  ">
@@ -167,7 +177,13 @@ const handleSelectedMedicine = (medicine) => {
               <h2>select a medicine to update</h2>
             </div>
             <div>
-              <h3>search option</h3>
+              <input
+                type="text"
+                placeholder="search"
+                value={searchQuery}
+                onChange={handleSearch}
+                className="px-2 py-2 outline-none rounded-md w-[15rem] "
+              />
             </div>
           </div>
           <div className="border border-gray-500 rounded-lg ">
@@ -185,7 +201,7 @@ const handleSelectedMedicine = (medicine) => {
 
             {/* Data Rows */}
             <div className="rounded-b-lg overflow-hidden h-[19rem] overflow-y-auto scrollbar-hidden">
-              {medicines.map((row, index) => (
+              {filterMedicines.map((row, index) => (
                 <div
                   key={index}
                   className="flex px-4 py-2 border-b border-gray-500 last:border-none bg-white"
@@ -198,7 +214,8 @@ const handleSelectedMedicine = (medicine) => {
                   <div className="w-20">
                     <button
                       onClick={() => handleSelectedMedicine(row)}
-                    className="text-white px-4 py-1 bg-darkWood rounded-md">
+                      className="text-white px-4 py-1 bg-darkWood rounded-md"
+                    >
                       update
                     </button>
                   </div>

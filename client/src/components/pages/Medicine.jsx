@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 const Medicine = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
   const [medicines, setMedicines] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [medicineData, setMedicineData] = useState({
     name: "",
     manufacturer: "",
@@ -101,6 +102,16 @@ const Medicine = () => {
     } catch (error) {
       console.log({ message: error.message });
     }
+  };
+
+  // search filter function
+  const filterMedicines = searchQuery
+    ? medicines.filter((medicine) =>
+        medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : medicines;
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -219,7 +230,21 @@ const Medicine = () => {
 
       {/* medicine list */}
       <section>
-        <div className=" p-6 mt-[8rem] ">
+        <div className=" p-6 mt-[5rem] ">
+          <div className="flex justify-between items-center mb-5">
+            <div>
+              <h2 className="text-2xl font-medium font-interFont" >Medicine List</h2>
+            </div>
+            <div>
+              <input
+                type="text"
+                placeholder="search"
+                value={searchQuery}
+                onChange={handleSearch}
+                className="px-2 py-2 outline-none rounded-md w-[15rem] "
+              />
+            </div>
+          </div>
           <div className="border border-gray-500 rounded-lg ">
             {/* Header */}
             <div className="flex border-b border-gray-500 p-2">
@@ -235,7 +260,7 @@ const Medicine = () => {
 
             {/* Data Rows */}
             <div className="rounded-b-lg overflow-hidden h-[19rem] overflow-y-auto scrollbar-hidden">
-              {medicines.map((row, index) => (
+              {filterMedicines.map((row, index) => (
                 <div
                   key={index}
                   className="flex p-2 border-b border-gray-500 last:border-none bg-white"
