@@ -6,13 +6,15 @@ const Quantity = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [medicines, setMedicines] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
+
   const [selectedMedicine, setSelectedMedicine] = useState({
     id: "",
     name: "",
-    stock: "",
+    stock: 0,
   });
   const [medicineData, setMedicineData] = useState({
-    stock: "",
+    additionalStock: 0,
   });
 
   const getAllMedicines = async () => {
@@ -56,7 +58,7 @@ const Quantity = () => {
       stock: medicine.stock,
     });
     setMedicineData({
-      stock: medicine.stock,
+      additionalStock: 0,
     });
   };
 
@@ -71,10 +73,13 @@ const Quantity = () => {
     const token = Cookies.get("token");
 
     try {
+      const updatedStock =
+        Number(selectedMedicine.stock) + Number(medicineData.additionalStock);
+
       const updateQuantity = await fetch(`${baseUrl}/${selectedMedicine.id}`, {
         method: "PUT",
         body: JSON.stringify({
-          stock: medicineData.stock,
+          stock: updatedStock,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +93,7 @@ const Quantity = () => {
       }
 
       const response = await updateQuantity.json();
-      console.log('update successfully', response);
+      console.log("update successfully", response);
 
       setSelectedMedicine({
         id: "",
@@ -98,6 +103,7 @@ const Quantity = () => {
       setMedicineData({
         stock: "",
       });
+      setIsTyping(false);
 
       getAllMedicines();
     } catch (error) {
@@ -114,21 +120,38 @@ const Quantity = () => {
               <h2 className="w-[24rem] py-2 px-3 rounded-md bg-white">
                 Name of Medicine :{" "}
                 <span className="font-semibold tracking-wider capitalize text-darkWood/80">
-                  {selectedMedicine.name || "select a medicine"}
+                  {selectedMedicine.name || "Select a medicine"}
                 </span>
               </h2>
-              <input
-                type="text"
-                placeholder="new quantity"
-                value={medicineData?.stock}
-                onChange={(e) => {
-                  setMedicineData({
-                    ...medicineData,
-                    stock: e.target.value,
-                  });
-                }}
-                className="w-[24rem] py-2 px-3 rounded-md outline-none bg-white"
-              />
+              <div className="relative w-[24rem]">
+                {/* Current Stock Display */}
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 opacity-70 pointer-events-none">
+                  {selectedMedicine.stock} + 
+                </span>
+
+                {/* User Input */}
+                <input
+                  type="number"
+                  placeholder="Add quantity"
+                  value={isTyping ? medicineData.additionalStock : ""}
+                  onFocus={() => {
+                    setMedicineData({ additionalStock: "" }); // Clear input when focused
+                    setIsTyping(true); // Start typing mode
+                  }}
+                  onBlur={() => {
+                    if (medicineData.additionalStock === "") {
+                      setIsTyping(false); // Exit typing mode if input is empty
+                    }
+                  }}
+                  onChange={(e) => {
+                    setMedicineData({
+                      ...medicineData,
+                      additionalStock: Number(e.target.value),
+                    });
+                  }}
+                  className="w-full py-2 px-3 rounded-md outline-none bg-white text-black pl-12"
+                />
+              </div>
             </div>
             <button className=" bg-darkWood px-[6rem] py-2 text-white capitalize font-interFont tracking-wider rounded-md">
               update
