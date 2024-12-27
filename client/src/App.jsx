@@ -11,26 +11,27 @@ import Quantity from "./components/pages/Quantity";
 import MainLayout from "./components/pages/layouts/MainLayout";
 import AuthProtectedUtils from "./components/utlis/AuthProtectedUtils";
 import UpdatePrice from "./components/pages/UpdatePrice";
-
-
+import Profile from "./components/pages/Profile";
 
 const App = () => {
   document.body.style.backgroundColor = "#D0DBD8";
-  
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
-        <Route element={
-          <AuthProtectedUtils>
-            <MainLayout/>
-          </AuthProtectedUtils>
-        }>
+        <Route
+          element={
+            <AuthProtectedUtils>
+              <MainLayout />
+            </AuthProtectedUtils>
+          }
+        >
           <Route path="/" element={<Overview />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/addstaff" element={<AddStaff />} />
-          <Route path="/updateprice" element={<UpdatePrice/>} />
+          <Route path="/updateprice" element={<UpdatePrice />} />
           <Route path="/medicine" element={<Medicine />} />
           <Route path="/illnesses" element={<Illnesses />} />
           <Route path="/quantity" element={<Quantity />} />

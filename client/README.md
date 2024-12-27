@@ -6,7 +6,7 @@ This template provides a minimal setup to get React working in Vite with HMR and
 # login information
 
 ```
-email: monmoygsc@gmail.com
+email: masrafitest@gmail.com
 passowrd: 123456789
 ```
 
