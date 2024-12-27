@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
@@ -5,6 +6,18 @@ const Medicine = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
   const [medicines, setMedicines] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // input field reworking
+  const [tagInput, setTagInput] = useState(""); // Input value for illnesses
+  const [filteredTags, setFilteredTags] = useState([]); // Filtered tags for suggestions
+  const [availableTags, setAvailableTags] = useState([
+    "fever",
+    "cold",
+    "headache",
+    "flu",
+    "cough",
+  ]); // Predefined tags
+
   const [medicineData, setMedicineData] = useState({
     name: "",
     manufacturer: "",
@@ -45,7 +58,7 @@ const Medicine = () => {
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-  
+
     setMedicineData((prevData) => {
       if (name === "illnesses") {
         return {
@@ -53,7 +66,7 @@ const Medicine = () => {
           [name]: value.split(",").map((item) => item.trim().toLowerCase()),
         };
       }
-  
+
       if (name.includes(".")) {
         const [parent, child] = name.split(".");
         return {
@@ -64,14 +77,93 @@ const Medicine = () => {
           },
         };
       }
-  
+
       return {
         ...prevData,
         [name]: value,
       };
     });
   };
-  
+
+  // input tag handler
+
+  const handleTagInput = (e) => {
+    const value = e.target.value;
+    setTagInput(value);
+
+    if (value.trim() === "") {
+      setFilteredTags([]);
+    } else {
+      setFilteredTags(
+        availableTags.filter((tag) =>
+          tag.toLowerCase().includes(value.toLowerCase())
+        )
+      );
+    }
+  };
+
+  const handleTagSelect = (tag) => {
+    if (!medicineData.illnesses.includes(tag)) {
+      setMedicineData((prevData) => ({
+        ...prevData,
+        illnesses: [...prevData.illnesses, tag],
+      }));
+      setAvailableTags((prevTags) => prevTags.filter((t) => t !== tag));
+    }
+    setTagInput("");
+    setFilteredTags([]);
+  };
+
+  const handleTagRemove = (tag) => {
+    setMedicineData((prevData) => ({
+      ...prevData,
+      illnesses: prevData.illnesses.filter((t) => t !== tag),
+    }));
+    setAvailableTags((prevTags) => [...prevTags, tag]);
+  };
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // mouse whele control and click and hold control
+
+  const scrollContainerRef = useRef(null);
+
+  // Enable mouse wheel horizontal scrolling
+  const handleWheelScroll = (e) => {
+    if (e.deltaY !== 0) {
+      e.preventDefault();
+      scrollContainerRef.current.scrollLeft += e.deltaY;
+    }
+  };
+
+  // Enable click-and-drag scrolling
+  let isDragging = false;
+  let startX, scrollLeft;
+
+  const handleMouseDown = (e) => {
+    isDragging = true;
+    startX = e.pageX - scrollContainerRef.current.offsetLeft;
+    scrollLeft = scrollContainerRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDragging = false;
+  };
+
+  const handleMouseUp = () => {
+    isDragging = false;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 1; // Adjust scroll speed
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     // console.log(medicineData);
@@ -88,15 +180,13 @@ const Medicine = () => {
       (illness) => illness && illness.trim() !== ""
     );
 
-    console.log(filteredMedicineData);
-    console.log(medicineData);
+    // console.log(filteredMedicineData);
+    // console.log(medicineData);
 
     const payload = {
       ...medicineData,
       illnesses: filteredMedicineData,
-    }
-
-
+    };
 
     try {
       const medicineCreation = await fetch(`${baseUrl}`, {
@@ -147,7 +237,7 @@ const Medicine = () => {
         medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : medicines;
-  const handleSearch = (e) => {
+  const handleSearchForList = (e) => {
     setSearchQuery(e.target.value);
   };
 
@@ -155,7 +245,7 @@ const Medicine = () => {
     <main>
       {/* medicine info */}
       <section>
-        <form onSubmit={onSubmitHandler} className="flex justify-evenly">
+        <form onSubmit={onSubmitHandler} className="flex justify-between">
           <div className="flex gap-x-6">
             <div>
               <div>
@@ -168,16 +258,68 @@ const Medicine = () => {
                   className="w-[25rem] px-3 py-2 rounded-md mb-4 outline-none "
                 />
               </div>
-              <div>
-                <input
-                  type="text"
-                  placeholder="illness"
-                  name="illnesses"
-                  value={medicineData.illnesses.join(", ")}
-                  onChange={onChangeHandler}
-                  className="w-[25rem] px-3 py-2 rounded-md mb-4 outline-none "
-                />
+
+              {/* Illnesses */}
+              {/* Dynamic Illness Input */}
+              <div className="relative mb-4 resize-none">
+                {/* Container for tags and input */}
+                <div className="bg-white flex items-center border rounded-md px-2 py-1 gap-2 max-w-[25rem] overflow-hidden w-[25rem] min-h-[3rem]">
+                  {/* Always Visible Input Field */}
+                  <div className="shrink-0">
+                    <input
+                      type="text"
+                      value={tagInput}
+                      onChange={handleTagInput}
+                      placeholder="Type illness..."
+                      className="outline-none px-2 py-1 w-[8rem]"
+                    />
+                  </div>
+
+                  {/* Scrollable Tags Container */}
+                  <div
+                    ref={scrollContainerRef}
+                    onWheel={handleWheelScroll}
+                    onMouseDown={handleMouseDown}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseUp={handleMouseUp}
+                    onMouseMove={handleMouseMove}
+                    className="flex gap-2 overflow-x-auto flex-nowrap scrollbar-hidden flex-1"
+                    style={{ userSelect: 'none' }}
+                  >
+                    {medicineData.illnesses.map((tag, index) => (
+                      <div
+                        key={index}
+                        className="border-2 border-darkWood px-2 py-1 rounded-md flex items-center shrink-0"
+                      >
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => handleTagRemove(tag)}
+                          className="ml-1 text-darkWood"
+                        >
+                          x
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Suggestions Dropdown */}
+                {filteredTags.length > 0 && (
+                  <ul className="absolute left-0 mt-1 w-[12rem] border rounded-md bg-white shadow-lg max-h-[10rem] overflow-y-auto z-10">
+                    {filteredTags.map((tag, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleTagSelect(tag)}
+                        className="cursor-pointer p-2 hover:bg-gray-200"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
+
               <div>
                 <input
                   type="number"
@@ -279,7 +421,7 @@ const Medicine = () => {
                 type="text"
                 placeholder="search"
                 value={searchQuery}
-                onChange={handleSearch}
+                onChange={handleSearchForList}
                 className="px-2 py-2 outline-none rounded-md w-[15rem] "
               />
             </div>
@@ -299,23 +441,28 @@ const Medicine = () => {
 
             {/* Data Rows */}
             <div className="rounded-b-lg overflow-hidden h-[19rem] overflow-y-auto scrollbar-hidden">
-              {filterMedicines.slice().reverse().map((row, index) => (
-                <div
-                  key={index}
-                  className="flex p-2 border-b border-gray-500 last:border-none bg-white"
-                >
-                  <div className="flex-1 text-gray-700">{row.name}</div>
-                  <div className="flex-1 text-gray-700">{row.manufacturer}</div>
-                  <div className="flex-1 text-gray-700">{row.stock}</div>
-                  <div className="flex-1 text-gray-700">{row.buyPrice}</div>
-                  <div className="flex-1 text-gray-700">{row.sellPrice}</div>
-                  <div className="w-20">
-                    <button className="text-blue-500 hover:underline">
-                      Edit
-                    </button>
+              {filterMedicines
+                .slice()
+                .reverse()
+                .map((row, index) => (
+                  <div
+                    key={index}
+                    className="flex p-2 border-b border-gray-500 last:border-none bg-white"
+                  >
+                    <div className="flex-1 text-gray-700">{row.name}</div>
+                    <div className="flex-1 text-gray-700">
+                      {row.manufacturer}
+                    </div>
+                    <div className="flex-1 text-gray-700">{row.stock}</div>
+                    <div className="flex-1 text-gray-700">{row.buyPrice}</div>
+                    <div className="flex-1 text-gray-700">{row.sellPrice}</div>
+                    <div className="w-20">
+                      <button className="text-blue-500 hover:underline">
+                        Edit
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
