@@ -80,10 +80,26 @@ const Medicine = () => {
       return;
     }
 
+    // filter MedicineData.illnesses to remove empty strings
+
+    const filteredMedicineData = medicineData.illnesses.filter(
+      (illness) => illness && illness.trim() !== ""
+    );
+
+    console.log(filteredMedicineData);
+    console.log(medicineData);
+
+    const payload = {
+      ...medicineData,
+      illnesses: filteredMedicineData,
+    }
+
+
+
     try {
       const medicineCreation = await fetch(`${baseUrl}`, {
         method: "POST",
-        body: JSON.stringify(medicineData),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -96,7 +112,22 @@ const Medicine = () => {
         console.log("Failed to create medicine");
       }
 
-      // console.log("medicine created successfully", response);
+      console.log("medicine created successfully", response);
+
+      // clear form
+      setMedicineData({
+        name: "",
+        manufacturer: "",
+        illnesses: [],
+        stock: "",
+        buyPrice: "",
+        sellPrice: "",
+        sellerInfo: {
+          sellerName: "",
+          sellerContactNumber: "",
+          sellerEmail: "",
+        },
+      });
 
       getAllMedicines();
     } catch (error) {
@@ -233,7 +264,9 @@ const Medicine = () => {
         <div className=" p-6 mt-[5rem] ">
           <div className="flex justify-between items-center mb-5">
             <div>
-              <h2 className="text-2xl font-medium font-interFont" >Medicine List</h2>
+              <h2 className="text-2xl font-medium font-interFont">
+                Medicine List
+              </h2>
             </div>
             <div>
               <input
