@@ -115,6 +115,44 @@ exports.protect = async (req, res, next) => {
   }
 };
 
+exports.profile = async (req, res) => {
+  try {
+    // Check if user data exists in req.user (set by protect middleware)
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        status: "fail",
+        message: "Unauthorized, please log in again.",
+      });
+    }
+
+    // Fetch the user from the database (excluding sensitive data like password)
+    const user = await User.findById(req.user._id).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found.",
+      });
+    }
+
+    console.log("Logged-in user profile:", user);
+
+    // Return user profile data
+    return res.status(200).json({
+      status: "success",
+      message: "Profile fetched successfully.",
+      data: user,
+    });
+  } catch (error) {
+    console.error("Profile Route Error:", error.message);
+    return res.status(500).json({
+      status: "fail",
+      message: "Server error while fetching profile.",
+      data: error.message,
+    });
+  }
+};
+
 exports.adminAuth = (req, res, next) => {
   try {
     if (!req.user || req.user.role !== "admin") {

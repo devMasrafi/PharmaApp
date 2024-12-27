@@ -45,31 +45,33 @@ const Medicine = () => {
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-
-    if (name === "illnesses") {
-      setMedicineData((prevData) => ({
-        ...prevData,
-        [name]: value.split(",").map((item) => item.trim()),
-      }));
-    } else if (name.includes(".")) {
-      // handle nested fields
-      const [parent, child] = name.split(".");
-      setMedicineData((prevData) => ({
-        ...prevData,
-        [parent]: {
-          ...prevData[parent],
-          [child]: value,
-        },
-      }));
-    } else {
-      // handle top-level fields
-      setMedicineData((prevData) => ({
+  
+    setMedicineData((prevData) => {
+      if (name === "illnesses") {
+        return {
+          ...prevData,
+          [name]: value.split(",").map((item) => item.trim().toLowerCase()),
+        };
+      }
+  
+      if (name.includes(".")) {
+        const [parent, child] = name.split(".");
+        return {
+          ...prevData,
+          [parent]: {
+            ...prevData[parent],
+            [child]: value,
+          },
+        };
+      }
+  
+      return {
         ...prevData,
         [name]: value,
-      }));
-    }
+      };
+    });
   };
-
+  
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     // console.log(medicineData);
@@ -113,6 +115,10 @@ const Medicine = () => {
       }
 
       console.log("medicine created successfully", response);
+
+      if (medicineCreation.ok) {
+        alert("Medicine created successfully");
+      }
 
       // clear form
       setMedicineData({
@@ -293,7 +299,7 @@ const Medicine = () => {
 
             {/* Data Rows */}
             <div className="rounded-b-lg overflow-hidden h-[19rem] overflow-y-auto scrollbar-hidden">
-              {filterMedicines.map((row, index) => (
+              {filterMedicines.slice().reverse().map((row, index) => (
                 <div
                   key={index}
                   className="flex p-2 border-b border-gray-500 last:border-none bg-white"
