@@ -12,6 +12,7 @@ import MainLayout from "./components/pages/layouts/MainLayout";
 import AuthProtectedUtils from "./components/utlis/AuthProtectedUtils";
 import UpdatePrice from "./components/pages/UpdatePrice";
 import Profile from "./components/pages/Profile";
+import TagSelector from "./components/TagSelector";
 
 const App = () => {
   document.body.style.backgroundColor = "#D0DBD8";
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/medicine" element={<Medicine />} />
           <Route path="/illnesses" element={<Illnesses />} />
           <Route path="/quantity" element={<Quantity />} />
+          <Route path="/tags" element={<TagSelector />} />
         </Route>
       </Routes>
     </BrowserRouter>
