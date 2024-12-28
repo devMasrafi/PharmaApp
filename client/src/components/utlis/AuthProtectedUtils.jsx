@@ -1,11 +1,10 @@
 import React, { Children } from "react";
 import AuthProtected from "./AuthProtected";
 
-
-const AuthProtectedUtils = ({children}) => {
+const AuthProtectedUtils = ({ children }) => {
   AuthProtected();
 
-  return <>{children}</>
+  return <>{children}</>;
 };
 
 export default AuthProtectedUtils;

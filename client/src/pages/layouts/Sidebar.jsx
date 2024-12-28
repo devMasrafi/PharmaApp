@@ -1,7 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router";
 import Cookies from "js-cookie";
-import uselogout from "../../utlis/logout";
+import uselogout from "../../components/utlis/logout";
+
 
 const Sidebar = () => {
   const pageArr = [

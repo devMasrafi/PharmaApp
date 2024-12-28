@@ -1,18 +1,20 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
+import MainLayout from "./pages/layouts/MainLayout";
+import Login from "./pages/Login";
 import NotFound from "./components/utlis/NotFound";
-import Login from "./components/pages/Login";
-import Overview from "./components/pages/Overview";
-import AddStaff from "./components/pages/AddStaff";
-
-import Medicine from "./components/pages/Medicine";
-import Illnesses from "./components/pages/Illnesses";
-import Quantity from "./components/pages/Quantity";
-import MainLayout from "./components/pages/layouts/MainLayout";
 import AuthProtectedUtils from "./components/utlis/AuthProtectedUtils";
-import UpdatePrice from "./components/pages/UpdatePrice";
-import Profile from "./components/pages/Profile";
-import TagSelector from "./components/TagSelector";
+import Overview from "./pages/Overview";
+import Profile from "./pages/Profile";
+import AddStaff from "./pages/AddStaff";
+import UpdatePrice from "./pages/UpdatePrice";
+import Medicine from "./pages/Medicine";
+import Illnesses from "./pages/Illnesses";
+import Quantity from "./pages/Quantity";
+
+
+
+
 
 const App = () => {
   document.body.style.backgroundColor = "#D0DBD8";
@@ -25,7 +27,7 @@ const App = () => {
         <Route
           element={
             <AuthProtectedUtils>
-              <MainLayout />
+              < MainLayout/>
             </AuthProtectedUtils>
           }
         >
@@ -36,7 +38,6 @@ const App = () => {
           <Route path="/medicine" element={<Medicine />} />
           <Route path="/illnesses" element={<Illnesses />} />
           <Route path="/quantity" element={<Quantity />} />
-          <Route path="/tags" element={<TagSelector />} />
         </Route>
       </Routes>
     </BrowserRouter>

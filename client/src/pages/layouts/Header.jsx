@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import  logedInUser  from "../../utlis/getUser";
+import  logedInUser  from "../../components/utlis/getUser";
 import { Link } from "react-router";
 
 const Header = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import getUser from "../utlis/getUser";
+import getUser from "../components/utlis/getUser";
 
 const Profile = () => {
   const user = getUser();

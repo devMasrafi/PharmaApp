@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
-
 import Cookies from "js-cookie";
 
 const Login = () => {
@@ -37,11 +36,11 @@ const Login = () => {
       console.log(response.data.userFound);
 
       Cookies.set("token", response.data.token, { expires: 1 });
-      Cookies.set('role', response.data.userFound.role, {expires: 1} )
+      Cookies.set("role", response.data.userFound.role, { expires: 1 });
       //   console.log(data.token);
 
       //   if ok navigate to overview
-        navigate("/");
+      navigate("/");
     } catch (error) {
       console.log({ message: error.message });
     }
