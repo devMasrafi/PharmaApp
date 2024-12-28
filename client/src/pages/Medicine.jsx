@@ -3,16 +3,14 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import useGetMedicine from "../components/useGetMedicine";
 
-
-
 const Medicine = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
   const { fetchedMedicine, error, refresh } = useGetMedicine();
   const [searchQuery, setSearchQuery] = useState("");
 
   // input field reworking
-  const [tagInput, setTagInput] = useState(""); 
-  const [filteredTags, setFilteredTags] = useState([]); 
+  const [tagInput, setTagInput] = useState("");
+  const [filteredTags, setFilteredTags] = useState([]);
   const [availableTags, setAvailableTags] = useState([
     "fever",
     "cold",
@@ -103,7 +101,6 @@ const Medicine = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-
 
   // mouse whele control and click and hold control
   const scrollContainerRef = useRef(null);
@@ -206,17 +203,17 @@ const Medicine = () => {
     }
   };
 
-// Filter medicines based on search query
-const filterMedicines = searchQuery
-? fetchedMedicine.filter((medicine) =>
-    medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-: fetchedMedicine;
+  // Filter medicines based on search query
+  const filterMedicines = searchQuery
+    ? fetchedMedicine.filter((medicine) =>
+        medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : fetchedMedicine;
 
-// Search handler
-const handleSearchForList = (e) => {
-setSearchQuery(e.target.value);
-};
+  // Search handler
+  const handleSearchForList = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <main>
@@ -261,7 +258,7 @@ setSearchQuery(e.target.value);
                     onMouseUp={handleMouseUp}
                     onMouseMove={handleMouseMove}
                     className="flex gap-2 overflow-x-auto flex-nowrap scrollbar-hidden flex-1"
-                    style={{ userSelect: 'none' }}
+                    style={{ userSelect: "none" }}
                   >
                     {medicineData.illnesses.map((tag, index) => (
                       <div

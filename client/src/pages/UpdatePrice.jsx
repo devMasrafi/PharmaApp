@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { IoSearchOutline } from "react-icons/io5";
+import useGetMedicine from "../components/useGetMedicine";
+
 const UpdatePrice = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
-  const [medicines, setMedicines] = useState([]);
+  const { fetchedMedicine, error, refresh } = useGetMedicine();
   const [searchQuery, setSearchQuery] = useState("");
+
   const [medicineData, setMedicineData] = useState({
     buyPrice: "",
     sellPrice: "",
@@ -18,30 +20,6 @@ const UpdatePrice = () => {
     sellPrice: "",
   });
 
-  // getting all medicines for list
-  const getAllMedicines = async () => {
-    const token = Cookies.get("token");
-
-    try {
-      const allMedicines = await fetch(`${baseUrl}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
-      if (!allMedicines.ok) {
-        throw new Error("Failed to fetch medicines");
-      }
-      const response = await allMedicines.json();
-      setMedicines(response);
-    } catch (error) {
-      console.log({ message: error.message });
-    }
-  };
-  useEffect(() => {
-    getAllMedicines();
-  }, []);
   const onChangeHandler = (e) => {
     setMedicineData({
       ...medicineData,
@@ -106,19 +84,19 @@ const UpdatePrice = () => {
         sellPrice: "",
       });
 
-      getAllMedicines();
+      refresh();
     } catch (error) {
       console.error("Error updating medicine prices:", error.message);
     }
   };
 
-  // serching/filtering medicines
   const filterMedicines = searchQuery
-    ? medicines.filter((medicine) =>
+    ? fetchedMedicine.filter((medicine) =>
         medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : medicines;
-  const handleSearch = (e) => {
+    : fetchedMedicine;
+
+  const handleSearchForList = (e) => {
     setSearchQuery(e.target.value);
   };
 
@@ -181,7 +159,7 @@ const UpdatePrice = () => {
                 type="text"
                 placeholder="search"
                 value={searchQuery}
-                onChange={handleSearch}
+                onChange={handleSearchForList}
                 className="px-2 py-2 outline-none rounded-md w-[15rem] "
               />
             </div>

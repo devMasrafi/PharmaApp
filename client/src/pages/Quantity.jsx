@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import useGetMedicine from "../components/useGetMedicine";
 import Cookies from "js-cookie";
 
 const Quantity = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
 
+  const { fetchedMedicine, error, refresh } = useGetMedicine();
   const [searchQuery, setSearchQuery] = useState("");
-  const [medicines, setMedicines] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
 
   const [selectedMedicine, setSelectedMedicine] = useState({
@@ -17,40 +18,6 @@ const Quantity = () => {
     additionalStock: 0,
   });
 
-  const getAllMedicines = async () => {
-    const token = Cookies.get("token");
-
-    try {
-      const allMedicines = await fetch(`${baseUrl}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
-      if (!allMedicines.ok) {
-        throw new Error("Failed to fetch medicines");
-      }
-      const response = await allMedicines.json();
-      setMedicines(response.data || response);
-    } catch (error) {
-      console.log({ message: error.message });
-    }
-  };
-  useEffect(() => {
-    getAllMedicines();
-  }, []);
-
-  // search filter function
-  const filterMedicines = searchQuery
-    ? medicines.filter((medicine) =>
-        medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : medicines;
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
   const handleSelectedMedicine = (medicine) => {
     setSelectedMedicine({
       id: medicine._id,
@@ -61,6 +28,17 @@ const Quantity = () => {
       additionalStock: 0,
     });
   };
+
+  // search filtering
+  const filterMedicines = searchQuery
+    ? fetchedMedicine.filter((medicine) =>
+        medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : fetchedMedicine;
+ 
+  const handlerSearchFilter = (e) =>{
+    setSearchQuery(e.target.value)
+  }
 
   // updating Quantity
   const onSubmitHandler = async (e) => {
@@ -105,7 +83,7 @@ const Quantity = () => {
       });
       setIsTyping(false);
 
-      getAllMedicines();
+      refresh();
     } catch (error) {
       console.log({ message: error.message });
     }
@@ -126,7 +104,7 @@ const Quantity = () => {
               <div className="relative w-[24rem]">
                 {/* Current Stock Display */}
                 <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 opacity-70 pointer-events-none">
-                  {selectedMedicine.stock} + 
+                  {selectedMedicine.stock} +
                 </span>
 
                 {/* User Input */}
@@ -172,7 +150,7 @@ const Quantity = () => {
                 type="text"
                 placeholder="search"
                 value={searchQuery}
-                onChange={handleSearch}
+                onChange={handlerSearchFilter}
                 className="px-2 py-2 outline-none rounded-md w-[15rem] "
               />
             </div>
