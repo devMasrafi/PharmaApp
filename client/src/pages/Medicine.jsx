@@ -1,15 +1,18 @@
 import { useRef } from "react";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import useGetMedicine from "../components/useGetMedicine";
+
+
 
 const Medicine = () => {
   const baseUrl = "http://localhost:8000/api/v1/medicines";
-  const [medicines, setMedicines] = useState([]);
+  const { fetchedMedicine, error, refresh } = useGetMedicine();
   const [searchQuery, setSearchQuery] = useState("");
 
   // input field reworking
-  const [tagInput, setTagInput] = useState(""); // Input value for illnesses
-  const [filteredTags, setFilteredTags] = useState([]); // Filtered tags for suggestions
+  const [tagInput, setTagInput] = useState(""); 
+  const [filteredTags, setFilteredTags] = useState([]); 
   const [availableTags, setAvailableTags] = useState([
     "fever",
     "cold",
@@ -31,30 +34,6 @@ const Medicine = () => {
       sellerEmail: "",
     },
   });
-
-  const getAllMedicines = async () => {
-    const token = Cookies.get("token");
-
-    try {
-      const allMedicines = await fetch(`${baseUrl}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
-      if (!allMedicines.ok) {
-        throw new Error("Failed to fetch medicines");
-      }
-      const response = await allMedicines.json();
-      setMedicines(response.data || response);
-    } catch (error) {
-      console.log({ message: error.message });
-    }
-  };
-  useEffect(() => {
-    getAllMedicines();
-  }, []);
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -86,7 +65,6 @@ const Medicine = () => {
   };
 
   // input tag handler
-
   const handleTagInput = (e) => {
     const value = e.target.value;
     setTagInput(value);
@@ -126,8 +104,8 @@ const Medicine = () => {
     setSearchQuery(e.target.value);
   };
 
-  // mouse whele control and click and hold control
 
+  // mouse whele control and click and hold control
   const scrollContainerRef = useRef(null);
 
   // Enable mouse wheel horizontal scrolling
@@ -180,9 +158,6 @@ const Medicine = () => {
       (illness) => illness && illness.trim() !== ""
     );
 
-    // console.log(filteredMedicineData);
-    // console.log(medicineData);
-
     const payload = {
       ...medicineData,
       illnesses: filteredMedicineData,
@@ -225,21 +200,23 @@ const Medicine = () => {
         },
       });
 
-      getAllMedicines();
+      refresh();
     } catch (error) {
       console.log({ message: error.message });
     }
   };
 
-  // search filter function
-  const filterMedicines = searchQuery
-    ? medicines.filter((medicine) =>
-        medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : medicines;
-  const handleSearchForList = (e) => {
-    setSearchQuery(e.target.value);
-  };
+// Filter medicines based on search query
+const filterMedicines = searchQuery
+? fetchedMedicine.filter((medicine) =>
+    medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+: fetchedMedicine;
+
+// Search handler
+const handleSearchForList = (e) => {
+setSearchQuery(e.target.value);
+};
 
   return (
     <main>
